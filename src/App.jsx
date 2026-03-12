@@ -25,6 +25,7 @@ const SERIES = [
   { id: "finops",     label: "Cost & FinOps",       color: "#4ade80", icon: "💰", order: 4, desc: "Cost leaks, Reservations, Azure Advisor, Tagging, FinOps culture" },
   { id: "iac",        label: "IaC & Automation",    color: "#fb923c", icon: "⚙️", order: 5, desc: "Why IaC, Bicep vs Terraform, State, Pipelines, Azure Policy" },
   { id: "ai",         label: "Azure AI & Copilot",  color: "#f9a8d4", icon: "🤖", order: 6, desc: "Azure OpenAI, RAG architecture, Copilot for Azure, AI workload security" },
+  { id: "entraadv",  label: "Entra ID Advanced",   color: "#e879f9", icon: "🔮", order: 7, desc: "SSO, B2B, B2C, Hybrid Identity, App Registrations, SSPR, Passwordless" },
 ];
 
 const POSTS = [
@@ -589,6 +590,180 @@ const POSTS = [
       { type:"callout", label:"✅ The Good News", text:"Everything above is a variation on what you already know from this series. Securing Azure OpenAI = same Private Endpoint and Managed Identity skills. Managing AI costs = same Cost Management tooling. AI is just a new workload on the same proven foundation." },
       { type:"h2", text:"Where to Start Right Now" },
       { type:"p", text:"Deploy an Azure OpenAI resource in a test subscription. Put a Private Endpoint on it. Authenticate with a Managed Identity from an App Service. Integrate it with Azure AI Search. Build a simple RAG app. That's the pattern appearing in most enterprise AI projects today — and you now have everything you need to do it." },
+    ]
+  },
+
+  // ── ENTRA ID ADVANCED ────────────────────────────────────────────────────────
+  {
+    id:31, series:"entraadv", level:"beginner", readTime:"6 min", date:"Aug 4, 2025", emoji:"🔮",
+    title:"Single Sign-On — One Login, Every App",
+    subtitle:"How SSO actually works and why your users will thank you",
+    excerpt:"Your team logs into Salesforce, then Jira, then GitHub, then Azure Portal — separate passwords for each. SSO fixes this permanently. Here is how it works in Entra ID.",
+    quiz:[
+      { q:"What protocol does modern SSO in Entra ID primarily use?", options:["LDAP","SAML 2.0 and OpenID Connect","Kerberos only","RADIUS"], answer:1 },
+      { q:"What is a Service Provider in SSO terminology?", options:["The identity system (Entra ID)","The application the user wants to access","The user's device","The network firewall"], answer:1 },
+      { q:"Gallery apps in Entra ID are:", options:["Custom-built apps only","Pre-integrated apps with SSO already configured","Only Microsoft apps","Paid add-ons"], answer:1 },
+    ],
+    content:[
+      { type:"intro", text:"Your team logs into Salesforce separately, then Jira separately, then GitHub, then the Azure Portal — each with a different password. SSO eliminates this entirely. One login. Every app. And it is not just convenience — it is a security upgrade too." },
+      { type:"h2", text:"How SSO Actually Works" },
+      { type:"p", text:"When a user opens Salesforce, Salesforce redirects them to Entra ID. Entra ID verifies the identity — checking MFA, Conditional Access policies, device compliance. It then hands back a token. Salesforce accepts the token and lets the user in. The user never typed a Salesforce password. Ever." },
+      { type:"compare", left:{ title:"SAML 2.0", items:["Older but widely supported","XML-based token exchange","Used by enterprise apps — Salesforce, ServiceNow","Browser redirect flow"] }, right:{ title:"OpenID Connect", items:["Modern, JSON-based","Built on OAuth 2.0","Used by cloud-native apps","Mobile and SPA friendly"] } },
+      { type:"h2", text:"Gallery Apps vs Custom Apps" },
+      { type:"list", items:["Gallery apps — thousands of pre-integrated apps like Salesforce, Zoom, Jira. SSO config is mostly automatic.", "Custom apps — your own internal apps. You configure the SAML or OIDC details manually.", "On-premises apps — legacy apps via Entra Application Proxy. No VPN required."] },
+      { type:"callout", label:"Security Win", text:"With SSO, users have fewer passwords to remember — so they stop writing them on sticky notes. Every authentication goes through Entra ID, so your Conditional Access and MFA policies apply to every app automatically." },
+      { type:"h2", text:"Where to Start" },
+      { type:"list", items:["Open Entra ID → Enterprise Applications → New Application","Search the gallery for your app — Salesforce, Zoom, GitHub","Follow the guided SSO setup wizard — usually under 20 minutes","Assign users or groups to the app","Test with a pilot user before rolling out"] },
+    ]
+  },
+  {
+    id:32, series:"entraadv", level:"beginner", readTime:"5 min", date:"Aug 11, 2025", emoji:"🤝",
+    title:"Azure AD B2B — Collaborate Without Creating Accounts",
+    subtitle:"Give partners and contractors access without managing their identities",
+    excerpt:"A contractor needs access to your Azure environment. You could create them a company account and manage it forever. Or you could use B2B and let them use their own identity.",
+    quiz:[
+      { q:"In B2B collaboration, who manages the guest's credentials?", options:["Your organisation","The guest's home organisation","Microsoft","A shared responsibility"], answer:1 },
+      { q:"What is a B2B guest user's UPN format in your tenant?", options:["Normal company email","user_domain.com#EXT#@yourtenant.onmicrosoft.com","A random ID assigned by Azure","Their personal email unchanged"], answer:1 },
+      { q:"Cross-tenant access settings control:", options:["VNet peering between tenants","What B2B guests can access and what MFA is required","Azure subscription billing","DNS resolution between tenants"], answer:1 },
+    ],
+    content:[
+      { type:"intro", text:"A partner company needs access to your SharePoint. A contractor needs to deploy to your Azure subscription. You have two options — create accounts you will have to manage forever, or use B2B and let them use identities they already have." },
+      { type:"h2", text:"How B2B Works" },
+      { type:"p", text:"You invite an external user via their email. They receive a redemption link. When they click it, they authenticate with their own identity provider — their company's Entra ID, Google, or even a one-time passcode. They appear in your tenant as a guest. You control what they can access. They manage their own password." },
+      { type:"callout", label:"Key Point", text:"You never own or manage their credentials. If they leave their company and lose their account, their access to your resources stops automatically — without you doing anything." },
+      { type:"h2", text:"What You Control" },
+      { type:"list", items:["Which apps and resources guests can access via RBAC roles","Whether guests must satisfy your Conditional Access policies","Whether guests need to re-authenticate with MFA even if their home tenant does not require it","Which external domains you allow or block via cross-tenant access settings","Regular Access Reviews to automatically remove guests who no longer need access"] },
+      { type:"h2", text:"B2B vs Creating Internal Accounts" },
+      { type:"compare", left:{ title:"B2B Guest", items:["They manage their own credentials","Access tied to their identity — auto-revoked if they leave","No password rotation burden on your team","Works with any identity provider"] }, right:{ title:"Internal Account", items:["You own and manage the account","Manual offboarding required","Password resets fall on your team","Only works with your directory"] } },
+      { type:"callout", label:"Best Practice", text:"Always use B2B for external collaborators. Never create internal accounts for contractors or partners unless there is a genuine business requirement. The operational overhead and security risk are not worth it." },
+    ]
+  },
+  {
+    id:33, series:"entraadv", level:"intermediate", readTime:"6 min", date:"Aug 18, 2025", emoji:"🛒",
+    title:"Azure AD B2C — Identity for Your Customers",
+    subtitle:"B2B is for partners. B2C is for millions of customers.",
+    excerpt:"Building a customer-facing app and need login, registration, password reset? Azure AD B2C handles all of it — and scales to hundreds of millions of users.",
+    quiz:[
+      { q:"What is the main difference between B2B and B2C?", options:["B2C is cheaper","B2B is for employees, B2C is for customer-facing apps","B2C uses different protocols","B2B requires P2 licence"], answer:1 },
+      { q:"User flows in B2C define:", options:["Network routing rules","The sign-up, sign-in, and password reset experience","Billing configurations","Admin role assignments"], answer:1 },
+      { q:"B2C supports social identity providers like:", options:["Only Microsoft accounts","Google, Facebook, Apple, and custom OIDC providers","Only enterprise IdPs","Only email and password"], answer:1 },
+    ],
+    content:[
+      { type:"intro", text:"B2B is for your partners and contractors. B2C is a completely different product — it is an identity platform for the customers of applications you build. Think of a retail app, a healthcare portal, or a banking mobile app. B2C handles all the login, registration, and account management for your end users." },
+      { type:"h2", text:"What B2C Provides" },
+      { type:"list", items:["Customer registration and login flows — fully customisable to match your brand","Social login — Google, Facebook, Apple, Twitter, and custom OIDC providers","Multi-factor authentication for customers","Self-service password reset — customers reset their own passwords","Custom domain support — login.yourcompany.com instead of b2clogin.com","Scales to hundreds of millions of user accounts"] },
+      { type:"h2", text:"User Flows vs Custom Policies" },
+      { type:"compare", left:{ title:"User Flows", items:["Pre-built, configurable flows","Sign-up, sign-in, password reset, profile edit","Good for 90% of scenarios","Visual configuration in the portal"] }, right:{ title:"Custom Policies (IEF)", items:["XML-based deep customisation","Complex multi-step journeys","Claims transformation and enrichment","Required for very specific enterprise requirements"] } },
+      { type:"callout", label:"Start Here", text:"Always start with User Flows. Custom Policies (Identity Experience Framework) are powerful but complex. Only move to them if User Flows genuinely cannot meet your requirement." },
+      { type:"h2", text:"B2C is a Separate Tenant" },
+      { type:"p", text:"This trips people up. Azure AD B2C lives in its own separate Entra ID tenant — not your corporate tenant. Your employees' identities and your customers' identities are completely isolated from each other. This is by design and a security requirement." },
+    ]
+  },
+  {
+    id:34, series:"entraadv", level:"intermediate", readTime:"5 min", date:"Aug 25, 2025", emoji:"🔗",
+    title:"Hybrid Identity — Bridging On-Premises AD and Azure",
+    subtitle:"Most enterprises have Active Directory on-premises. Here is how to connect it to the cloud.",
+    excerpt:"Active Directory has been running on-premises for 20 years. Azure AD Connect bridges it to Entra ID so users get one identity everywhere.",
+    quiz:[
+      { q:"What tool synchronises on-premises Active Directory to Entra ID?", options:["Azure Site Recovery","Azure AD Connect / Cloud Sync","Azure Arc","Active Directory Federation Services alone"], answer:1 },
+      { q:"Password Hash Sync means:", options:["Passwords are stored in Azure in plain text","A hash of the password hash is synced, enabling cloud authentication","Users must change passwords monthly","Passwords sync in real time via ADFS"], answer:1 },
+      { q:"Seamless SSO allows on-premises joined machines to:", options:["Bypass MFA always","Sign into cloud apps without re-entering credentials","Access Azure resources without a licence","Disable Conditional Access"], answer:1 },
+    ],
+    content:[
+      { type:"intro", text:"Most enterprises I work with have Active Directory on-premises — sometimes running for 20 years with thousands of users and groups. The question is always the same: how do we connect this to Azure without breaking everything? That is hybrid identity." },
+      { type:"h2", text:"Azure AD Connect — The Bridge" },
+      { type:"p", text:"Azure AD Connect (now Azure AD Connect Cloud Sync for newer deployments) synchronises your on-premises AD users, groups, and attributes to Entra ID. Users get the same UPN in both places. One identity. Works on-premises and in the cloud." },
+      { type:"h2", text:"Three Authentication Methods" },
+      { type:"list", items:["Password Hash Sync — a hash of the password hash syncs to Entra ID. Cloud authentication. Simplest, most resilient. Microsoft's recommended option for most organisations.", "Pass-through Authentication — authentication requests forwarded to on-premises AD agents in real time. Password never leaves on-premises.", "Federation with ADFS — full federation. Complex, requires ADFS infrastructure. Only justified if you have specific claims requirements."] },
+      { type:"callout", label:"Microsoft Recommendation", text:"Password Hash Sync is the recommended authentication method for most organisations. It provides cloud resilience — if your on-premises environment goes down, users can still authenticate to cloud apps." },
+      { type:"h2", text:"Seamless SSO" },
+      { type:"p", text:"Enable Seamless SSO alongside Password Hash Sync and users on domain-joined machines walk into cloud apps without typing credentials. Kerberos ticket from on-premises AD used to get an Entra ID token silently. Completely transparent to the user." },
+    ]
+  },
+  {
+    id:35, series:"entraadv", level:"intermediate", readTime:"5 min", date:"Sep 1, 2025", emoji:"📱",
+    title:"App Registrations — How Apps Authenticate to Azure",
+    subtitle:"Every app that calls an Azure API needs an identity. Here is how to set it up correctly.",
+    excerpt:"App Registrations are how you give an application its own identity in Entra ID. Get this wrong and you end up with credential sprawl and security gaps.",
+    quiz:[
+      { q:"An App Registration creates which two objects?", options:["A VM and a managed disk","An Application object and a Service Principal","A user and a group","A subscription and a resource group"], answer:1 },
+      { q:"The Application object exists in:", options:["Every tenant that uses the app","Only the home tenant where the app was registered","All Azure subscriptions","The resource group of the app"], answer:1 },
+      { q:"Client secrets should be rotated:", options:["Never — they are permanent","Before they expire, on a regular schedule","Only when compromised","Every 10 years"], answer:1 },
+    ],
+    content:[
+      { type:"intro", text:"Every application that needs to authenticate to Azure, call Microsoft Graph, or access any protected API needs an identity. That identity is created via an App Registration. Get the setup wrong and you end up with secrets expiring in production, or — worse — credentials committed to a repository." },
+      { type:"h2", text:"What an App Registration Creates" },
+      { type:"compare", left:{ title:"Application Object", items:["The global definition of the app","Lives in the home tenant only","Defines permissions, redirect URIs, branding","One per app, regardless of how many tenants use it"] }, right:{ title:"Service Principal", items:["The local instance in each tenant","Created when app is added to a tenant","This is what gets RBAC roles assigned","Exists in every tenant where the app is used"] } },
+      { type:"h2", text:"Client Secrets vs Certificates" },
+      { type:"list", items:["Client secrets — simple strings, easy to set up, easy to leak. Expire — set reminders or use Azure Key Vault references.", "Certificates — private key never leaves your control. Much harder to accidentally expose. Preferred for production workloads.", "Federated credentials — for CI/CD pipelines like GitHub Actions. No secret at all — workload identity federation. Best option where supported."] },
+      { type:"callout", label:"Never Do This", text:"Never store a client secret in source code, a config file, or a pipeline variable in plain text. Store secrets in Azure Key Vault and reference them at runtime. Treat them like passwords — because they are." },
+      { type:"h2", text:"API Permissions: Delegated vs Application" },
+      { type:"list", items:["Delegated permissions — app acts on behalf of a signed-in user. The user's permissions limit what the app can do.", "Application permissions — app acts as itself, with no user context. Background services and daemons. Requires admin consent.", "Always grant minimum required permissions. Never grant full Graph access when you only need User.Read."] },
+    ]
+  },
+  {
+    id:36, series:"entraadv", level:"intermediate", readTime:"5 min", date:"Sep 8, 2025", emoji:"🔑",
+    title:"SSPR — Let Users Reset Their Own Passwords",
+    subtitle:"Password reset calls are one of the most expensive IT support tickets. Eliminate them.",
+    excerpt:"Password resets are the number one helpdesk ticket in most organisations. SSPR gives users a secure self-service option and cuts support costs overnight.",
+    quiz:[
+      { q:"What does SSPR stand for?", options:["Single Sign-On Password Recovery","Self-Service Password Reset","Secure System Password Rotation","Synced Service Principal Reset"], answer:1 },
+      { q:"Which licence is required for SSPR?", options:["Entra ID Free","Entra ID P1","Entra ID P2 only","Microsoft 365 Basic only"], answer:1 },
+      { q:"SSPR write-back allows:", options:["Passwords to sync from cloud to on-premises AD","Users to reset passwords on any device","SSPR to work without MFA","Admins to reset all passwords in bulk"], answer:0 },
+    ],
+    content:[
+      { type:"intro", text:"Password reset is consistently the most common helpdesk ticket in organisations. Users forget passwords. They get locked out. They call IT. IT resets the password. This costs real money per ticket and frustrates everyone involved. SSPR eliminates the whole cycle." },
+      { type:"h2", text:"How SSPR Works" },
+      { type:"list", items:["User goes to aka.ms/sspr or clicks Forgot Password on the login page","They verify their identity using pre-registered methods — authenticator app, phone, email, security questions","After passing verification, they set a new password","For hybrid environments with SSPR write-back enabled, the password syncs back to on-premises AD within seconds"] },
+      { type:"h2", text:"Authentication Methods for SSPR" },
+      { type:"list", items:["Microsoft Authenticator app — most secure, recommended","Mobile phone (SMS or voice call) — convenient, widely supported","Alternate email address — simple but slightly weaker","Security questions — legacy option, weakest — avoid where possible"] },
+      { type:"callout", label:"Require Two Methods", text:"Configure SSPR to require two verification methods. One method alone is vulnerable to SIM swap attacks or a compromised secondary email. Two methods adds meaningful resistance." },
+      { type:"h2", text:"SSPR Write-Back for Hybrid Environments" },
+      { type:"p", text:"If you have on-premises Active Directory synced via Azure AD Connect, enable SSPR write-back. When a user resets their password in the cloud, it writes back to on-premises AD in real time. Without this, users reset their cloud password but still cannot log into their on-premises workstation." },
+      { type:"callout", label:"ROI", text:"A single helpdesk password reset typically costs between £10 and £30 in staff time when fully loaded. An organisation of 500 users might handle 50-100 password resets per month. SSPR typically pays for the P1 licence within the first quarter." },
+    ]
+  },
+  {
+    id:37, series:"entraadv", level:"advanced", readTime:"6 min", date:"Sep 15, 2025", emoji:"🚫",
+    title:"Passwordless Authentication — The Future Is Already Here",
+    subtitle:"Passwords are the weakest link. Entra ID lets you eliminate them entirely.",
+    excerpt:"Phishing works because passwords can be stolen. Passwordless authentication removes the password from the equation entirely — and it is available in Entra ID right now.",
+    quiz:[
+      { q:"Which passwordless method uses biometrics or a PIN tied to a specific device?", options:["SMS OTP","FIDO2 security key","Windows Hello for Business","Microsoft Authenticator phone sign-in"], answer:2 },
+      { q:"Why is passwordless more phishing-resistant than MFA with SMS?", options:["It is cheaper","The credential is cryptographically bound to the specific website — it cannot be replayed elsewhere","It requires a physical device","It does not use the internet"], answer:1 },
+      { q:"FIDO2 security keys are best suited for:", options:["Users without smartphones","All users in all scenarios","Only administrators","Only Windows devices"], answer:0 },
+    ],
+    content:[
+      { type:"intro", text:"Phishing works because passwords can be stolen and replayed. Adversary-in-the-middle attacks intercept MFA codes. The only way to be truly resistant to these attacks is to remove the password entirely. Passwordless authentication is not a future concept — it is fully available in Entra ID today." },
+      { type:"h2", text:"Three Passwordless Options in Entra ID" },
+      { type:"list", items:["Windows Hello for Business — biometric or PIN login on Windows devices. Credential is cryptographically bound to the device. Cannot be phished — the private key never leaves the device.", "Microsoft Authenticator — number matching and app approval instead of a password. Phone becomes the authentication factor.", "FIDO2 security keys — physical hardware keys (YubiKey, etc.). Touch the key to authenticate. Strongest phishing resistance. Best for shared workstations or users without smartphones."] },
+      { type:"h2", text:"Why Passwordless is More Secure Than MFA" },
+      { type:"p", text:"Standard MFA with a one-time code can be phished. An attacker creates a fake login page, you enter your password and MFA code, the attacker captures both and replays them in real time. Passwordless credentials are cryptographically bound to the specific origin — they physically cannot be used on a different website." },
+      { type:"callout", label:"Phishing Resistance", text:"FIDO2 and Windows Hello for Business are classified as phishing-resistant MFA by CISA and NCSC. For privileged admin accounts especially, passwordless should be the target authentication method." },
+      { type:"h2", text:"Rollout Strategy" },
+      { type:"list", items:["Start with IT and security teams — lower risk, faster feedback","Deploy Microsoft Authenticator passwordless for most users — lowest friction","Use FIDO2 keys for admin accounts, shared workstations, and users without smartphones","Use Conditional Access to require phishing-resistant MFA for privileged roles and sensitive apps"] },
+    ]
+  },
+  {
+    id:38, series:"entraadv", level:"advanced", readTime:"5 min", date:"Sep 22, 2025", emoji:"🗺️",
+    title:"Entra ID Governance — The Full Picture",
+    subtitle:"Identity governance is how you ensure the right people have the right access for the right time",
+    excerpt:"You have Conditional Access, PIM, and Access Reviews. But how do they fit together into a complete identity governance strategy? Here is the full picture.",
+    quiz:[
+      { q:"Entitlement Management in Entra ID Governance is used for:", options:["Billing management","Managing access packages — bundled access to resources that users can request","Device enrolment","Application deployment"], answer:1 },
+      { q:"What is the Entra ID Governance lifecycle scope?", options:["Only joiners","Joiners and movers only","Joiners, movers, and leavers","Only leavers and terminated users"], answer:2 },
+      { q:"Lifecycle Workflows automate:", options:["VM deployments","Tasks tied to employee HR events — onboarding, role changes, offboarding","Network configuration","Cost management"], answer:1 },
+    ],
+    content:[
+      { type:"intro", text:"You have read about PIM, Access Reviews, and Conditional Access across this series. Entra ID Governance brings all of this together into a complete framework for ensuring the right people have the right access — and critically, that they lose it when they no longer need it." },
+      { type:"h2", text:"The Three Governance Problems" },
+      { type:"list", items:["Too much access — users accumulate permissions over time. Role changes, project endings, promotions — access is rarely cleaned up automatically.", "Access is permanent — standing access means anyone who compromises an account has immediate high-privilege access.", "No visibility — nobody knows who has access to what, when it was granted, or whether it is still needed."] },
+      { type:"h2", text:"The Entra ID Governance Toolset" },
+      { type:"list", items:["Access Reviews — periodic certification of who has access and whether they still need it. Automatic removal when nobody can justify it.", "Privileged Identity Management (PIM) — make privileged access time-limited and approval-gated.", "Entitlement Management — access packages that bundle resources. Users request access. Approvers approve. Access expires automatically.", "Lifecycle Workflows — automate tasks tied to HR events. New joiner: provision accounts and send welcome email. Leaver: disable account and remove access within hours."] },
+      { type:"callout", label:"The Joiner-Mover-Leaver Framework", text:"Good identity governance covers the full employee lifecycle. Joiners get the right access from day one. Movers have access updated when they change roles. Leavers have all access removed — automatically, on their last day, before anyone manually does anything." },
+      { type:"h2", text:"Where to Start" },
+      { type:"list", items:["Implement Access Reviews for privileged roles first — high impact, lower complexity","Enable PIM for Global Admin, Security Admin, and Privileged Role Admin","Set up Lifecycle Workflows for offboarding — automatic account disable on termination date","Build an access package for your most-requested resource bundles"] },
+      { type:"callout", label:"The Goal", text:"A mature identity governance posture means: no permanent privileged access, no orphaned accounts, no unknown access grants, and automated response to every HR lifecycle event. You do not need to achieve this overnight — but every control you add reduces real risk." },
     ]
   },
 ];
