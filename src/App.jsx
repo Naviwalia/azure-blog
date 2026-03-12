@@ -938,10 +938,10 @@ function RoadmapView({ onOpenPost }) {
             Go from Zero to<br /><em style={{ color:G.accent }}>Cloud Engineer.</em>
           </h1>
           <p style={{ fontSize:17, color:G.muted, maxWidth:520, margin:"0 auto 36px", lineHeight:1.8, fontFamily:"Georgia,serif" }}>
-            A structured learning path with 30 articles across 6 series. Know exactly where to start, what to read next, and test yourself after every article.
+            A structured learning path with {POSTS.length} articles across {SERIES.length} series. Know exactly where to start, what to read next, and test yourself after every article.
           </p>
           <div style={{ display:"flex", justifyContent:"center", gap:36, flexWrap:"wrap" }}>
-            {[["30","Articles"],["6","Series"],["3","Skill Levels"]].map(([n,l])=>(
+            {[[POSTS.length,"Articles"],[SERIES.length,"Series"],["3","Skill Levels"]].map(([n,l])=>(
               <div key={l} style={{ borderLeft:`2px solid ${G.accent}`, paddingLeft:16, textAlign:"left" }}>
                 <div style={{ fontFamily:"Georgia,serif", fontSize:30, fontWeight:900, color:"#f1f5f9", lineHeight:1 }}>{n}</div>
                 <div style={{ fontSize:11, color:G.muted, fontFamily:"monospace", letterSpacing:1 }}>{l}</div>
@@ -1101,7 +1101,7 @@ function ArticleView({ post, onBack, onOpenPost }) {
             <div style={{ marginTop:28, padding:28, background:"#0a1929", border:`1px solid ${G.accent}44`, borderRadius:16, textAlign:"center" }}>
               <div style={{ fontSize:36, marginBottom:10 }}>🎉</div>
               <div style={{ fontFamily:"Georgia,serif", fontSize:20, fontWeight:800, color:"#f1f5f9", marginBottom:6 }}>You've completed the entire learning path!</div>
-              <div style={{ fontSize:13, color:G.muted, fontFamily:"Georgia,serif", marginBottom:18 }}>30 articles. 6 series. You're ready to apply this in the real world.</div>
+              <div style={{ fontSize:13, color:G.muted, fontFamily:"Georgia,serif", marginBottom:18 }}>{POSTS.length} articles. {SERIES.length} series. You're ready to apply this in the real world.</div>
               <button onClick={onBack} style={{ padding:"12px 28px", borderRadius:12, border:"none", cursor:"pointer", background:G.accent, color:"#000", fontWeight:800, fontSize:14, fontFamily:"inherit" }}>Back to Roadmap</button>
             </div>
           )}
@@ -1123,7 +1123,7 @@ function AllPostsView({ onOpenPost }) {
 
   return (
     <div style={{ maxWidth:1100, margin:"0 auto", padding:"40px 32px 80px" }}>
-      <h2 style={{ fontFamily:"Georgia,serif", fontSize:26, fontWeight:800, color:"#f1f5f9", marginBottom:24 }}>All 30 Articles</h2>
+      <h2 style={{ fontFamily:"Georgia,serif", fontSize:26, fontWeight:800, color:"#f1f5f9", marginBottom:24 }}>All {POSTS.length} Articles</h2>
       <div style={{ display:"flex", gap:10, flexWrap:"wrap", marginBottom:28, paddingBottom:24, borderBottom:`1px solid ${G.border}` }}>
         <div style={{ position:"relative" }}>
           <span style={{ position:"absolute", left:12, top:"50%", transform:"translateY(-50%)", color:G.muted, fontSize:13, pointerEvents:"none" }}>🔍</span>
@@ -1203,7 +1203,7 @@ export default function App() {
       {view!=="article" && (
         <footer style={{ background:G.surface, borderTop:`1px solid ${G.border}`, textAlign:"center", padding:"24px", fontFamily:"monospace", fontSize:12, color:G.muted }}>
           <div style={{ fontFamily:"Georgia,serif", fontSize:16, fontWeight:800, color:"#f1f5f9", marginBottom:6 }}>Azure<span style={{ color:G.accent }}>Engineer</span></div>
-          30 articles · 6 series · 3 skill levels · Quizzes after every article
+          {POSTS.length} articles · {SERIES.length} series · 3 skill levels · Quizzes after every article
         </footer>
       )}
 
