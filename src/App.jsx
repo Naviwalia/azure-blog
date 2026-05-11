@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 // ─── THEME ───────────────────────────────────────────────────────────────────
 const G = {
@@ -1207,6 +1208,7 @@ export default function App() {
         </footer>
       )}
 
+      <SpeedInsights />
       <style>{`
         @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
         @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
