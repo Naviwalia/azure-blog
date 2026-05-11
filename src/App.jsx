@@ -1,3 +1,4 @@
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import { useState, useEffect } from "react";
 
 // ─── THEME ───────────────────────────────────────────────────────────────────
@@ -1217,6 +1218,7 @@ export default function App() {
           .hero{padding:48px 20px 40px!important;}
         }
       `}</style>
+      <SpeedInsights />
     </div>
   );
 }
